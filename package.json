@@ -1,5 +1,5 @@
 {
-  "name": "pino-sentry",
+  "name": "@thesparklaboratory/pino-sentry",
   "description": "@sentry/node transport for pino logger",
   "author": "Andrew Avdeev <andrewww.avdeev@gmail.com>",
   "keywords": [
@@ -54,9 +54,7 @@
     "pino": "^6.5.1",
     "ts-jest": "^28.0.4",
     "ts-node": "^10.8.1",
-    "typescript": "^4.7.3"
-  },
-  "peerDependencies": {
+    "typescript": "^4.7.3",
     "@sentry/node": ">=6.2.5"
   }
 }

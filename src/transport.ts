@@ -60,6 +60,15 @@ const SeverityIota  = {
 } as const;
 
 export interface PinoSentryOptions {
+  release?: string;
+  dist?: string;
+  maxBreadcrumbs?: number;
+  sampleRate?: number;
+  initializeSentry?: boolean;
+  debug?: boolean;
+  dsn?: string;
+  serverName?: string;
+  environment?: string;
   /** Minimum level for a log to be reported to Sentry from pino-sentry */
   level?: keyof typeof SeverityIota;
   messageAttributeKey?: string;
@@ -84,14 +93,13 @@ export class PinoSentryTransport {
   sentryExceptionLevels = [Severity.Fatal, Severity.Error];
   decorateScope = (_data: Record<string, unknown>, _scope: Sentry.Scope) => {/**/};
 
-  
+
   public constructor(options?: PinoSentryOptions & Sentry.NodeOptions)
-  public constructor(options?: PinoSentryOptions, initializeSentry: false)
-  public constructor(options?: any, initializeSentry?: boolean = true) {
+  public constructor(options?: PinoSentryOptions) {
     const validatedOptions = this.validateOptions(options || {});
 
-    if (initializeSentry) {
-      Sentry.init(validatedOptions)
+    if (options?.initializeSentry) {
+      Sentry.init(validatedOptions);
     }
   }
 
@@ -247,7 +255,11 @@ class ChunkInfo extends AsyncResource {
 }
 
 export function createWriteStream(options?: PinoSentryOptions): stream.Duplex {
-  const transport = new PinoSentryTransport(options);
+  const optionsWithDefaults = {
+    initializeSentry: true,
+    ...options
+  };
+  const transport = new PinoSentryTransport(optionsWithDefaults);
   const sentryTransformer = transport.transformer();
 
   return new Pump(
